@@ -1,0 +1,150 @@
+[
+    {
+        "id": "001",
+        "type": "single",
+        "text": "In Python come si accede ai parametri della linea di comando?",
+        "options": [
+            "Variabile globale <code>argv</code>",
+            "Dal modulo <code>main</code> con <code>main.argv</code>",
+            "Con un parametro del <code>main</code>",
+            "Dal modulo <code>sys</code> con <code>sys.argv</code>"
+        ],
+        "correct": [
+            0,
+            0,
+            0,
+            1
+        ],
+        "weight": 2
+    },
+    {
+        "id": "002",
+        "type": "single",
+        "text": "Quale è la prima istruzione eseguita da un programma Python?",
+        "options": [
+            "La prima istruzione della prima funzione definita nel file <code>.py</code> invocato",
+            "La prima istruzione della funzione main presente nel file <code>.py</code> invocato.",
+            "La prima istruzione presente nel file <code>.py</code> invocato con il comando <code>python</code>",
+            "La prima istruzione del metodo <code>main</code> della classe presente nel file <code>.py</code> invocato"
+        ],
+        "correct": [
+            0,
+            0,
+            1,
+            0
+        ],
+        "review": [
+            "No",
+            "No",
+            "Si",
+            "No"
+        ],
+        "weight": 1
+    },
+    {
+        "id": "003",
+        "type": "single",
+        "text": "Quale è la lista degli argomenti per il comando <code>python programma.py Via Roma 33</code>?",
+        "options": [
+            "<code>['programma.py', 'Via', 'Roma', '33']</code>",
+            "<code>[Via', 'Roma', '33']</code>",
+            "<code>['programma.py', 'Via Roma', '33']</code>",
+            "<code>['programma.py', 'Via Roma 33']</code>"
+        ],
+        "correct": [
+            1,
+            0,
+            0,
+            0
+        ],
+        "weight": 2
+    },
+    {
+        "id": "004",
+        "type": "single",
+        "text": "Qual'è l'istruzione Python per stampare sulla console?",
+        "options": [
+            "<code>System.out.println</code>",
+            "<code>cout</code>",
+            "<code>print</code>",
+            "<code>console.log</code>"
+        ],
+        "correct": [
+            0,
+            0,
+            1,
+            0
+        ],
+        "weight": 1
+    },
+    {
+        "id": "005",
+        "type": "multiple",
+        "text": "Indica quali operatori sono presenti in Python",
+        "options": [
+            "Somma <code>+</code>",
+            "Inverso <code>|</code>",
+            "Prodotto <code>*</code>",
+            "Divisone intera <code>//</code>"
+        ],
+        "correct": [
+            1,
+            0,
+            1,
+            1
+        ],
+        "weight": 2
+    },
+    {
+        "id": "006",
+        "type": "multiple",
+        "text": "Indica quale delle seguenti variabili è di tipo <code>float</code>.",
+        "options": [
+            "<code>a = 3</code>",
+            "<code>a = 3.5</code>",
+            "<code>a = 7 / 2</code>",
+            "<code>a = float(3)</code>",
+            "<code>a = 7 // 2</code>",
+            "<code>a = 3 + 2.5</code>"
+        ],
+        "correct": [
+            0,
+            1,
+            1,
+            1,
+            0,
+            1
+        ],
+        "weight": 3
+    },
+    {
+        "id": "007",
+        "type": "single",
+        "text": "Quale di queste function <strong>non</strong> disponibile di default in Python?",
+        "options": [
+            "<code>array(x)</code>",
+            "<code>int(x)</code>",
+            "<code>float(x)</code>",
+            "<code>str(x)</code>"
+        ],
+        "correct": [
+            1,
+            0,
+            0,
+            0
+        ],
+        "weight": 1,
+        "hint": ""
+    },
+    {
+        "id": "008",
+        "type": "fill",
+        "text": "Completa l'istruzione per stampare a video la stringa <code>Ciao</code>",
+        "tofill": "{{0}}<code>('Ciao')</code>", 
+        "correct": [
+            "print"
+        ],
+        "weight": 1
+    }
+
+]
