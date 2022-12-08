@@ -79,8 +79,11 @@
     },
     {
         "id": "005",
-        "type": "multiple",
-        "text": "Indica quali operatori sono presenti in Python",
+        "type": "invertible",
+        "text": [
+            "Indica quali operatori sono presenti in Python",
+            "Indica quali operatori <u>non</u> sono presenti in Python"
+        ],
         "options": [
             "Somma <code>+</code>",
             "Inverso <code>|</code>",

@@ -21,8 +21,12 @@ def clean(s):
 	s = s.replace('<u>', '\\underline{')
 	return s
 
+def complement(x):
+	return 1-x
+
 if __name__ == "__main__":
 	question_file = 'questions.json'
+	max_number = 10
 	if len(sys.argv) > 1:
 		question_file = sys.argv[1]
 	fp = open(question_file)
@@ -31,24 +35,34 @@ if __name__ == "__main__":
 	i = 1
 	content = ''
 	solved = ''
-	for q in questions:
+	if max_number > len(questions):
+		max_number = len(questions)
+	for q in questions[:max_number]:
 		content += question_header(i)
 		solved += question_header(i)
+		text = q['text']
+		correct = q['correct']
+		type = q['type']
 
-		if q['type'] != 'fill':
-			content += f'{clean(q["text"])}\n'
-			solved += f'{clean(q["text"])}\n'
+		if type != 'fill':
+			options = q['options']
+			if type == 'invertible':
+				alternate = random.randint(0,1)
+				text = q['text'][alternate]
+				correct = list(map(complement, correct))
+
+			content += f'{clean(text)}\n'
+			solved += f'{clean(text)}\n'
 			content += '\\begin{itemize}\n'
 			solved += '\\begin{itemize}\n'
 			# to randomize all vectors, we randomize indexing
-			indexes = list(range(len(q['options'])))
+			indexes = list(range(len(options)))
 			random.shuffle(indexes)
 			for j in range(len(indexes)):
-				opt = q['options'][indexes[j]]
+				opt = options[indexes[j]]
 				content += f'  \\item[$\\square$] {clean(opt)}\n'
-				# TODO mark correct answers
 				mark = '$\\square$'
-				if q['correct'][indexes[j]] == 1:
+				if correct[indexes[j]] == 1:
 					mark = '$\\checkmark$'
 				solved += f'  \\item[{mark}] {clean(opt)}\n'
 				j += 1
@@ -56,13 +70,13 @@ if __name__ == "__main__":
 			content += '\\end{itemize}\n'
 			solved += '\\end{itemize}\n'
 		# fill type questions are different
-		if q['type'] == 'fill':
-			content += f'{clean(q["text"])}\\\\\n'
-			solved += f'{clean(q["text"])}\\\\\n'
+		if type == 'fill':
+			content += f'{clean(text)}\\\\\n'
+			solved += f'{clean(text)}\\\\\n'
 			tofill = clean(q['tofill'])
-			for j in range(len(q['correct'])):
+			for j in range(len(correct)):
 				# Attention: order of replacements is important
-				sol_filled = tofill.replace(f'{{{{{j}}}}}', q['correct'][j])
+				sol_filled = tofill.replace(f'{{{{{j}}}}}',correct[j])
 				tofill = tofill.replace(f'{{{{{j}}}}}', fill_placehold)
 				
 			content += tofill
@@ -71,11 +85,11 @@ if __name__ == "__main__":
 
 	# Text output
 	out = open(template_file).read()
-	out = out.replace('[[--CONTENT--]]', content)
+	out = out.replace('%%--CONTENT--%%', content)
 	open(text_out_file, 'w').write(out)
 
 	# Solution output
 	out = open(template_file).read()
-	out = out.replace('[[--CONTENT--]]', solved)
+	out = out.replace('%%--CONTENT--%%', solved)
 	open(solution_out_file, 'w').write(out)
 	
