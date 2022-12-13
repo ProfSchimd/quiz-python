@@ -1,6 +1,13 @@
 import sys
 import json
 import random
+import argparse
+
+def parse_arguments():
+	parser = argparse.ArgumentParser(description='Crea quiz randomizzati.')
+	parser.add_argument('--numero', dest='n', type=int, default=-1, help='Numero di domande se -1 (default) usa tutte')
+	parser.add_argument('--input', dest='input', default='questions.json', help='File JSON contenente le domande')
+	return parser.parse_args()
 
 template_file = 'template.tex'
 text_out_file = 'text.tex'
@@ -25,13 +32,15 @@ def complement(x):
 	return 1-x
 
 if __name__ == "__main__":
-	question_file = 'questions.json'
-	max_number = 10
-	if len(sys.argv) > 1:
-		question_file = sys.argv[1]
+	args = parse_arguments()
+	print(args)
+	question_file = args.input
 	fp = open(question_file)
 	questions = json.load(fp)
 	random.shuffle(questions)
+	max_number = args.n
+	if max_number < 0 or max_number > len(questions):
+		max_number = len(questions)
 	i = 1
 	content = ''
 	solved = ''
