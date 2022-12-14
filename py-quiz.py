@@ -1,17 +1,16 @@
-import sys
 import json
 import random
 import argparse
 
 def parse_arguments():
 	parser = argparse.ArgumentParser(description='Crea quiz randomizzati.')
-	parser.add_argument('--numero', dest='n', type=int, default=-1, help='Numero di domande se -1 (default) usa tutte')
+	parser.add_argument('--number', dest='n', type=int, default=-1, help='Numero di domande se -1 (default) usa tutte')
 	parser.add_argument('--input', dest='input', default='questions.json', help='File JSON contenente le domande')
+	parser.add_argument('--output', dest='output', default='text.tex', help='Specifica il nome del file di output (testo)')
+	parser.add_argument('--solution', dest='solution', default='solution.tex', help='Specifica il nome del file di output (soluzione)')
 	return parser.parse_args()
 
 template_file = 'template.tex'
-text_out_file = 'text.tex'
-solution_out_file = 'solution.tex'
 fill_placehold = "\\verb|..................|"
 
 def question_header(i):
@@ -33,7 +32,6 @@ def complement(x):
 
 if __name__ == "__main__":
 	args = parse_arguments()
-	print(args)
 	question_file = args.input
 	fp = open(question_file)
 	questions = json.load(fp)
@@ -95,10 +93,10 @@ if __name__ == "__main__":
 	# Text output
 	out = open(template_file).read()
 	out = out.replace('%%--CONTENT--%%', content)
-	open(text_out_file, 'w').write(out)
+	open(args.output, 'w').write(out)
 
 	# Solution output
 	out = open(template_file).read()
 	out = out.replace('%%--CONTENT--%%', solved)
-	open(solution_out_file, 'w').write(out)
+	open(args.solution, 'w').write(out)
 	
