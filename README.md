@@ -24,13 +24,13 @@ options to be checked (in `invertible` type questions this relation is reversed 
 * a `weight` number representing the weight of the answer in the final score computation (used only for automatic evaluation).
 
 ## Planned features
-* Create several version with `--versions` options (default being 1)
+* ~~Create several version with `--tracks` options (default being 1)~~
 * All English help text
 * ~~Add options `--output` for output names~~
 * Add more type of questions
     * Ordered options: asks student to assign an order from `1` to `n` to the `n` options
     * Multi-Multiple: like `multiple`, but has several versions (similar to `invertible` but allowing even more than two versions)
-* Allow tha definition of the number of quiz for any type and/or define the number of quiz for each weight
+* Allow the definition of the number of quiz for any type and/or define the number of quiz for each weight
 * Optional seeding for replication of tests
 * Integrate external service like [YToTech](https://latex.ytotech.com/), see documentation
 [here](https://github.com/YtoTech/latex-on-http)
