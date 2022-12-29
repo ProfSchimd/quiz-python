@@ -27,11 +27,14 @@ options to be checked (in `invertible` type questions this relation is reversed 
 * ~~Create several version with `--tracks` options (default being 1)~~
 * All English help text
 * ~~Add options `--output` for output names~~
+* Support multiple input files `--input a.json,b.json,c.json`
 * Add more type of questions
     * Ordered options: asks student to assign an order from `1` to `n` to the `n` options
     * Multi-Multiple: like `multiple`, but has several versions (similar to `invertible` but allowing even more than two versions)
 * Allow the definition of the number of quiz for any type and/or define the number of quiz for each weight
 * Optional seeding for replication of tests
+* Add a `--save file.json` option to save in `JSON` format the questions used (multiple file if
+`--tracks` is greater than one)
 * Integrate external service like [YToTech](https://latex.ytotech.com/), see documentation
 [here](https://github.com/YtoTech/latex-on-http)
 * Support different backends: TeX, pdf, txt, docx, ...
@@ -43,7 +46,7 @@ Currently, the code uses only features from standard Python packages: `random`, 
 ## Synopsis
 
 ```
-usage: py-quiz.py [-h] [--number N] [--input INPUT] [--output OUTPUT] [--solution SOLUTION]
+usage: py-quiz.py [-h] [--number N] [--input INPUT] [--output OUTPUT] [--solution SOLUTION] [--tracks TRACKS]
 
 Crea quiz randomizzati.
 
@@ -51,8 +54,9 @@ options:
   -h, --help           show this help message and exit
   --number N           Numero di domande se -1 (default) usa tutte
   --input INPUT        File JSON contenente le domande
-  --output OUTPUT      Specifica il nome del file di output (testo)
-  --solution SOLUTION  Specifica il nome del file di output (soluzione)
+  --output OUTPUT      Specifica il nome del file di output (testo) senza estensione
+  --solution SOLUTION  Specifica il nome del file di output (soluzione) senza estensione
+  --tracks TRACKS      Numero di tracce (default 1)
 ```
 
 ## Examples
