@@ -3,12 +3,12 @@ import random
 import argparse
 
 def parse_arguments():
-	parser = argparse.ArgumentParser(description='Crea quiz randomizzati.')
-	parser.add_argument('--number', dest='n', type=int, default=-1, help='Numero di domande se -1 (default) usa tutte')
-	parser.add_argument('--input', dest='input', default='questions.json', help='File JSON contenente le domande')
-	parser.add_argument('--output', dest='output', default='text', help='Specifica il nome del file di output (testo) senza estensione')
-	parser.add_argument('--solution', dest='solution', default='solution', help='Specifica il nome del file di output (soluzione) senza estensione')
-	parser.add_argument('--tracks', dest='tracks', type=int, default=1, help='Numero di tracce (default 1)')
+	parser = argparse.ArgumentParser(description='Generate random quiz from input JSON files.')
+	parser.add_argument('--number', dest='n', type=int, default=-1, help='Number of questions, if -1 (default) use all')
+	parser.add_argument('--input', dest='input', default='questions.json', help='Comma separated list of JSON file(s) with questions')
+	parser.add_argument('--output', dest='output', default='text', help='Name of the output (text) file, without extension')
+	parser.add_argument('--solution', dest='solution', default='solution', help='Name of the output (solution) file, without extension')
+	parser.add_argument('--tracks', dest='tracks', type=int, default=1, help='Number of tracks (default 1)')
 	return parser.parse_args()
 
 template_file = 'template.tex'
@@ -27,6 +27,18 @@ def clean(s):
 	s = s.replace('</u>', '}')
 	s = s.replace('<u>', '\\underline{')
 	return s
+
+'''
+Loads questions from file, but doesn't randomize it. this function contains the
+logic to open file(s), merge them (if multiple are indicated).
+'''
+def load_questions(args):
+	question_files = args.input.split(',')
+	questions = []
+	for q in question_files:
+		with open(q) as fp:
+			questions += json.load(fp)
+	return questions
 
 def complement(x):
 	return 1-x
@@ -96,9 +108,7 @@ def create_track(questions, max_number, out_file, sol_file):
 
 if __name__ == "__main__":
 	args = parse_arguments()
-	question_file = args.input
-	fp = open(question_file)
-	questions = json.load(fp)
+	questions = load_questions(args)
 	max_number = args.n
 	if max_number < 0 or max_number > len(questions):
 		max_number = len(questions)

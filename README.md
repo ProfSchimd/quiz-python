@@ -24,20 +24,25 @@ options to be checked (in `invertible` type questions this relation is reversed 
 * a `weight` number representing the weight of the answer in the final score computation (used only for automatic evaluation).
 
 ## Planned features
-* ~~Create several version with `--tracks` options (default being 1)~~
-* All English help text
-* ~~Add options `--output` for output names~~
-* Support multiple input files `--input a.json,b.json,c.json`
+* Optional seeding for replication of tests
+* Add a `--no-random` option that disable randomization
+* Add a `--save file.json` option to save in `JSON` format the questions used (multiple file if
+`--tracks` is greater than one)
 * Add more type of questions
     * Ordered options: asks student to assign an order from `1` to `n` to the `n` options
     * Multi-Multiple: like `multiple`, but has several versions (similar to `invertible` but allowing even more than two versions)
-* Allow the definition of the number of quiz for any type and/or define the number of quiz for each weight
-* Optional seeding for replication of tests
-* Add a `--save file.json` option to save in `JSON` format the questions used (multiple file if
-`--tracks` is greater than one)
+* Allow the definition of the number of quiz for any type/file and/or define the number of quiz for each weight
 * Integrate external service like [YToTech](https://latex.ytotech.com/), see documentation
 [here](https://github.com/YtoTech/latex-on-http)
 * Support different backends: TeX, pdf, txt, docx, ...
+* Refactoring with Question class (see `dev.md`)
+* Add an option `--template` for custom templates
+
+### Completed features
+* ~~Create several version with `--tracks` options (default being 1)~~
+* ~~All English help text~~
+* ~~Add options `--output` for output names~~
+* ~~Support multiple input files `--input a.json,b.json,c.json`~~
 
 ## Prerequisites
 
@@ -48,15 +53,15 @@ Currently, the code uses only features from standard Python packages: `random`, 
 ```
 usage: py-quiz.py [-h] [--number N] [--input INPUT] [--output OUTPUT] [--solution SOLUTION] [--tracks TRACKS]
 
-Crea quiz randomizzati.
+Generate random quiz from input JSON files.
 
 options:
   -h, --help           show this help message and exit
-  --number N           Numero di domande se -1 (default) usa tutte
-  --input INPUT        File JSON contenente le domande
-  --output OUTPUT      Specifica il nome del file di output (testo) senza estensione
-  --solution SOLUTION  Specifica il nome del file di output (soluzione) senza estensione
-  --tracks TRACKS      Numero di tracce (default 1)
+  --number N           Number of questions, if -1 (default) use all
+  --input INPUT        Comma separated list of JSON file(s) with questions
+  --output OUTPUT      Name of the output (text) file, without extension
+  --solution SOLUTION  Name of the output (solution) file, without extension
+  --tracks TRACKS      Number of tracks (default 1)
 ```
 
 ## Examples
