@@ -121,23 +121,16 @@
         "weight": 3
     },
     {
-        "id": "007",
-        "type": "single",
-        "text": "Quale di queste function <strong>non</strong> disponibile di default in Python?",
-        "options": [
-            "<code>array(x)</code>",
-            "<code>int(x)</code>",
-            "<code>float(x)</code>",
-            "<code>str(x)</code>"
-        ],
-        "correct": [
-            1,
-            0,
-            0,
-            0
-        ],
-        "weight": 1,
-        "hint": ""
+    	"id": "007",
+    	"type": "fill",
+    	"text": "Completa il seguente frammento di codice in modo che compili e non generi errori runtime",
+    	"tofill": "<code>class Persona {<br>  String nome;<br>  String cognome;<br>  {{0}} lavoro;<br>  Persona({{1}}, {{2}}); // inizializza nome e cognome<br>}</code>",
+    	"correct": [
+    		"String?",
+			"required String nome",
+			"required String cognome"
+    	],
+    	"weight": 1
     },
     {
         "id": "008",

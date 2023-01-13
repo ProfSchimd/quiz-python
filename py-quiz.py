@@ -9,10 +9,11 @@ def parse_arguments():
 	parser.add_argument('--output', dest='output', default='text', help='Name of the output (text) file, without extension')
 	parser.add_argument('--solution', dest='solution', default='solution', help='Name of the output (solution) file, without extension')
 	parser.add_argument('--tracks', dest='tracks', type=int, default=1, help='Number of tracks (default 1)')
+	parser.add_argument('--seed', dest='seed', type=int, default=None, help='Integer value for seeding randomization (default is no seeding)')
 	return parser.parse_args()
 
 template_file = 'template.tex'
-fill_placehold = "\\verb|..................|"
+fill_placehold = ".................."
 
 def question_header(i):
 	return f'\\subsection*{{Quiz {i}}}\n'
@@ -27,6 +28,9 @@ def clean(s):
 	s = s.replace('</u>', '}')
 	s = s.replace('<u>', '\\underline{')
 	return s
+
+def is_code_block(s):
+	return s.startswith('<code>') and s.endswith('</code>')
 
 '''
 Loads questions from file, but doesn't randomize it. this function contains the
@@ -86,10 +90,18 @@ def create_track(questions, max_number, out_file, sol_file):
 			content += f'{clean(text)}\\\\\n'
 			solved += f'{clean(text)}\\\\\n'
 			tofill = clean(q['tofill'])
+			# in case of code block we better use verbatim environment
+			if is_code_block(q['tofill']):
+				tofill = q['tofill'].replace('<code>', '\\begin{verbatim}')
+				tofill = tofill.replace('</code>', '\n\\end{verbatim}\n')
+				tofill = tofill.replace('<br>', '\n')
+
+			sol_filled = '' + tofill
 			for j in range(len(correct)):
 				# Attention: order of replacements is important
-				sol_filled = tofill.replace(f'{{{{{j}}}}}',correct[j])
+				sol_filled = sol_filled.replace(f'{{{{{j}}}}}',correct[j])
 				tofill = tofill.replace(f'{{{{{j}}}}}', fill_placehold)
+
 				
 			content += tofill
 			solved += sol_filled
@@ -108,6 +120,7 @@ def create_track(questions, max_number, out_file, sol_file):
 
 if __name__ == "__main__":
 	args = parse_arguments()
+	random.seed(args.seed)
 	questions = load_questions(args)
 	max_number = args.n
 	if max_number < 0 or max_number > len(questions):
