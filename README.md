@@ -24,7 +24,7 @@ options to be checked (in `invertible` type questions this relation is reversed 
 * a `weight` number representing the weight of the answer in the final score computation (used only for automatic evaluation).
 
 ## Planned features
-* Optional seeding for replication of tests
+* ~~Optional seeding for replication of tests~~
 * Add a `--no-random` option that disable randomization
 * Add a `--save file.json` option to save in `JSON` format the questions used (multiple file if
 `--tracks` is greater than one)
@@ -80,7 +80,14 @@ $ python py-quiz --input in.json
 ```
 ---
 
-Specifies input (`in.json`) and text (`out.tex`) and solution (`sol.tex`) output files
+Specifies multiple input files `in1.json`, `in2.json`, `in3.json` (pay attention
+to the format, **do not** put whitespaces in the list and separete with commas)
+```
+$ python py-quiz --input in1.json,in2.json,in3.json
+```
+---
+
+Specifies input (`in.json`), text (`out.tex`), and solution (`sol.tex`) output files
 ```
 $ python py-quiz --input in.json --output out.tex --solution sol.tex
 ```
