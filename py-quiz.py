@@ -1,6 +1,7 @@
 import json
 import random
 import argparse
+import os.path
 
 def parse_arguments():
 	parser = argparse.ArgumentParser(description='Generate random quiz from input JSON files.')
@@ -27,6 +28,8 @@ def clean(s):
 	s = s.replace('<strong>', '\\textbf{')
 	s = s.replace('</u>', '}')
 	s = s.replace('<u>', '\\underline{')
+	s = s.replace('</i>', '}')
+	s = s.replace('<i>', '\\emph{')
 	return s
 
 def is_code_block(s):
@@ -40,14 +43,14 @@ def load_questions(args):
 	question_files = args.input.split(',')
 	questions = []
 	for q in question_files:
-		with open(q) as fp:
+		with open(os.path.expanduser(q)) as fp:
 			questions += json.load(fp)
 	return questions
 
 def complement(x):
 	return 1-x
 
-def create_track(questions, max_number, out_file, sol_file):
+def create_track(questions, max_number, out_file, sol_file, track_n):
 	
 	random.shuffle(questions)
 	i = 1
@@ -87,8 +90,8 @@ def create_track(questions, max_number, out_file, sol_file):
 			solved += '\\end{itemize}\n'
 		# fill type questions are different
 		if type == 'fill':
-			content += f'{clean(text)}\\\\\n'
-			solved += f'{clean(text)}\\\\\n'
+			content += f'{clean(text)}\n'
+			solved += f'{clean(text)}\n'
 			tofill = clean(q['tofill'])
 			# in case of code block we better use verbatim environment
 			if is_code_block(q['tofill']):
@@ -110,11 +113,13 @@ def create_track(questions, max_number, out_file, sol_file):
 	# Text output
 	out = open(template_file).read()
 	out = out.replace('%%--CONTENT--%%', content)
+	out = out.replace('%%--FOOTRIGHT--%%', f'T:{track_n}')
 	open(out_file, 'w').write(out)
 
 	# Solution output
 	out = open(template_file).read()
 	out = out.replace('%%--CONTENT--%%', solved)
+	out = out.replace('%%--FOOTRIGHT--%%', f'T:{track_n}')
 	open(sol_file, 'w').write(out)
 	
 
@@ -133,5 +138,5 @@ if __name__ == "__main__":
 			sol_file += f'_{track+1}'
 		out_file += '.tex'
 		sol_file += '.tex'
-		create_track(questions, max_number, out_file, sol_file)
+		create_track(questions, max_number, out_file, sol_file, track)
 	
