@@ -68,7 +68,8 @@ def create_track(questions, max_number, out_file, sol_file, track_n):
 			if type == 'invertible':
 				alternate = random.randint(0,1)
 				text = q['text'][alternate]
-				correct = list(map(complement, correct))
+				if alternate == 1:
+					correct = list(map(complement, correct))
 
 			content += f'{clean(text)}\n'
 			solved += f'{clean(text)}\n'
