@@ -1,0 +1,20 @@
+[
+	{
+		"id": "001",
+		"type": "open",
+		"text": "Creare HTML e CSS per {{0}} all'interno della quale devono essere inseriti nome e cognome ed immagine di profilo posizionata {{1}} della pagina stessa. Successivamente deve essere prevista una tua breve {{2}} includendo anche quali sono i tuoi {{3}}. In una successiva sezione elenca {{4}}. Nel footer della pagina devono essere presenti {{5}}.",
+		"variants": [
+			["il tuo curriculum", "il tuo profilo LinkedIn", "la pagina 'about' del tuo blog"],
+			["a sinistra", "a destra"],
+			["presentazione", "biografia", "descrizione"],
+			["hobby", "interessi personali"],
+			[
+				"i linguaggi che conosci ed il livello (base, intermedio avanzato)",
+				"le lingue che conosci ed il livello (A1, A2, B1, ..., C2)"
+			],
+			["indirizzo email e link GitHub", "indirizzo email", "link GitHub"]
+		],
+		"weight": 4,
+		"tags": []
+	}
+]

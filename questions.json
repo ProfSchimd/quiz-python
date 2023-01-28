@@ -141,6 +141,16 @@
             "print"
         ],
         "weight": 1
+    },
+    {
+        "id": "009",
+        "type": "fill",
+        "text": "Complete",
+        "tofill": "<code>[i*i {{0}} i in range(10)]</code>",
+        "correct": [
+            "for"
+        ],
+        "weight": 1
     }
 
 ]
