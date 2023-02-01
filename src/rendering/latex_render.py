@@ -68,8 +68,8 @@ def latex_render_fill(q):
     return content_text, content_solution
 
 def latex_render_open(q):
-    content_text = ''
-    content_solution = ''
+    content_text = q._text
+    content_solution = q._text
     return content_text, content_solution
 
 def latex_render(questions, template_file, text_file, solution_file, track_n):
@@ -79,12 +79,10 @@ def latex_render(questions, template_file, text_file, solution_file, track_n):
     for q in questions:
         text_content += question_header(i)
         solved_content += question_header(i)
-
         text = ''
         solution = ''
         if q._type in ['single', 'multiple', 'invertible', 'multi-variate']:
             text, solution = latex_render_choices(q)
-            
         elif q._type == 'open':
             text, solution = latex_render_open(q)
         elif q._type == 'fill':

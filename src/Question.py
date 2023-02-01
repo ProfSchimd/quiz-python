@@ -4,12 +4,12 @@ import random
 class Question:
     """Contains basic feature of a Question."""
 
-    def __init__(self, id, text, weight):
+    def __init__(self, id, text, weight, tags=[]):
         """Initialize Question."""
         self.id = id
         self._text = text
         self._weight = weight
-        self._tags = []
+        self._tags = tags
         self._type = 'undefined'
 
 
@@ -22,7 +22,7 @@ class DisplayQuestion(Question):
 
 
 class CheckboxQuestion(DisplayQuestion):
-    def __init__(self, id, text, weight, options = [], correct = [], type = None):
+    def __init__(self, id, text, weight, options=[], correct=[], type=None):
         super().__init__(id, text, weight)
         self._options = options
         self._correct = correct
@@ -30,7 +30,7 @@ class CheckboxQuestion(DisplayQuestion):
             self._type = type
 
 class FillQuestion(DisplayQuestion):
-    def __init__(self, id, text, to_fill, weight, correct = [], type = None):
+    def __init__(self, id, text, to_fill, weight, correct=[], type=None):
         super().__init__(id, text, weight)
         self._correct = correct
         self._to_fill = to_fill
@@ -38,9 +38,10 @@ class FillQuestion(DisplayQuestion):
             self._type = type
 
 class OpenQuestion(DisplayQuestion):
-    def __init__(self, id, text, weight, variants):
+    def __init__(self, id, text, weight, type=None):
         super().__init__(id, text, weight)
-        self._variants = variants
+        if type is not None:
+            self._type = type
 
 class RawQuestion(Question):
     """Represents (meta) questions before instantiation randomization and substitution."""
@@ -61,6 +62,8 @@ class RawQuestion(Question):
             return RawChoiceQuestion.from_dict(d)
         elif d['type'] == 'fill':
             return RawFillQuestion.from_dict(d)
+        elif d['type'] == 'open':
+            return RawOpenQuestion.from_dict(d)
         return cls(d['id'], d['text'], d['weight'])
         
 
@@ -88,7 +91,7 @@ class RawChoiceQuestion(RawQuestion):
 
     @classmethod
     def from_dict(cls, d):
-        """Construct RaChoiceQuestion from a dictionary.
+        """Construct RawChoiceQuestion from a dictionary.
         
         The dictionary should have the exact same structure as the JSON file."""
         text = None
@@ -123,7 +126,24 @@ class RawFillQuestion(RawQuestion):
         return cls(d['id'], d['text'], d['weight'], d['tofill'], d['correct'], d['type'])
 
 class RawOpenQuestion(RawQuestion):
-    pass
+    def __init__(self, id, text, weight, variants, type):
+        super().__init__(id, text, weight)
+        self._variants = variants
+        self._type = type
+
+    def to_display_question(self, seed=None):
+        text = self._text
+        n_variants = len(self._variants)
+        for i in range (n_variants):
+            n_opts = len(self._variants[i])
+            choice = random.randint(0, n_opts-1)
+            selected = self._variants[i][choice]
+            text = text.replace('{{' + str(i) + '}}', selected)
+        return OpenQuestion(self.id, text, self._weight, self._type)
+
+    @classmethod
+    def from_dict(cls, d):
+        return cls(d['id'], d['text'], d['weight'], d['variants'], d['type'])
 
 class RawCompositeQuestion(RawQuestion):
     pass

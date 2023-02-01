@@ -1,6 +1,7 @@
 text*.tex
 solution*.tex
 build/
+.vscode/
 
 # Mac OS
 .DS_Store
