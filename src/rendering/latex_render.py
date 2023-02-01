@@ -3,7 +3,7 @@ import util
 fill_placeholder = ".................."
 
 def question_header(i):
-    return f'\n\\subsection*{{Quiz {i}}}\n'
+    return f'\n\\subsection*{{Domanda {i}}}\n'
 
 def html_to_latex(s):
 	s = s.replace('</code>', '}')

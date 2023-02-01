@@ -1,5 +1,7 @@
 text*.tex
 solution*.tex
+text*.txt
+solution*.txt
 build/
 .vscode/
 

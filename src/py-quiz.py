@@ -4,28 +4,31 @@ import random
 import argparse
 import os.path
 
+from rendering.latex_render import latex_render
+from rendering.text_rendering import text_render
 import Question as qst
 
 
 def parse_arguments():
-	"""Parse command line arguments."""
-	parser = argparse.ArgumentParser(
-	    description='Generate random quiz from input JSON files.')
-	parser.add_argument('--number', dest='n', type=int, default=-1,
+    """Parse command line arguments."""
+    parser = argparse.ArgumentParser(description='Generate random quiz from input JSON files.')
+    parser.add_argument('--number', dest='n', type=int, default=-1,
                         help='Number of questions, if -1 (default) use all')
-	parser.add_argument('--input', dest='input', default='questions.json',
+    parser.add_argument('--input', dest='input', default='questions.json',
                         help='Comma separated list of JSON file(s) with questions')
-	parser.add_argument('--output', dest='output', default='text',
+    parser.add_argument('--output', dest='output', default='text',
                         help='Name of the output (text) file, without extension')
-	parser.add_argument('--solution', dest='solution', default='solution',
+    parser.add_argument('--solution', dest='solution', default='solution',
                         help='Name of the output (solution) file, without extension')
-	parser.add_argument('--tracks', dest='tracks', type=int,
+    parser.add_argument('--tracks', dest='tracks', type=int,
                         default=1, help='Number of tracks (default 1)')
-	parser.add_argument('--seed', dest='seed', type=int, default=None,
+    parser.add_argument('--seed', dest='seed', default=None,
                         help='Integer value for seeding randomization (default is no seeding)')
-	parser.add_argument('--test', dest='test', type=int,
+    parser.add_argument('--test', dest='test', type=int,
                         default=0, help='Used for developing purpose')
-	return parser.parse_args()
+    parser.add_argument('--render', dest='render', default='latex', 
+                        help='Defines the rendering type: latex, text (default is latex)')
+    return parser.parse_args()
 
 
 template_file = 'template.tex'
@@ -53,9 +56,11 @@ def create_quiz(questions, count, shuffle=True):
         random.shuffle(quiz)
     return quiz[:count]
 
-def render_quiz(quiz, template, text, solution, track_n):
-    from rendering.latex_render import latex_render
-    latex_render(quiz, template, text, solution, track_n)
+def render_quiz(quiz, template, text, solution, track_n, render):
+    if render == 'latex':
+        latex_render(quiz, template, text, solution, track_n)
+    elif render == 'text':
+        text_render(quiz, template, text, solution, track_n)
 
 if __name__ == "__main__":
     args = parse_arguments()
@@ -79,5 +84,5 @@ if __name__ == "__main__":
         if args.tracks > 1:
             out_file += f'_{track+1}'
             sol_file += f'_{track+1}'
-        render_quiz(quiz, template_file, out_file, sol_file, track)
+        render_quiz(quiz, template_file, out_file, sol_file, track, args.render)
         
