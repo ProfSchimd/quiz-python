@@ -1,0 +1,29 @@
+[
+	{
+		"id": "001",
+		"type": "exercise",
+		"text": "Risponde alle seguenti domande su {{0}}.",
+        "sub-questions": [
+            {
+                "question": "Come sono rappresentati i {{0}}?",
+                "variants": [
+                    ["nodi", "valori", "collegamenti tra nodi"]
+                ],
+                "weight": 1
+            },
+            {
+                "question": "Nel linguaggio {{0}}, quali tecniche e/o algoritmi conosci per rappresentare e memorizzare i {{1}}",
+                "variants": [
+                    ["Java", "Javascript"],
+                    ["nodi", "valori", "collegamenti tra nodi"]
+                ],
+                "weight": 2
+            }
+        ],
+		"text-variants": [
+			["Grafi", "Alberi", "Liste"]
+		],
+		"weight": false,
+		"tags": []
+	}
+]

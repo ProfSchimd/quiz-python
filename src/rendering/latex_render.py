@@ -42,7 +42,6 @@ def latex_render_choices(q):
     return content_text, content_solution
 
 def latex_render_fill(q):
-
     content_text = ''
     content_solution = ''
     correct = q._correct
@@ -72,6 +71,20 @@ def latex_render_open(q):
     content_solution = q._text
     return content_text, content_solution
 
+def latex_render_exercise(q):
+    content_text = f'{html_to_latex(q._text)}\n'
+    content_solution = f'{html_to_latex(q._text)}\n'
+    
+    content_text += '\\begin{enumerate}\n'
+    content_solution += '\\begin{enumerate}\n'
+    for sub_q in q._sub_questions:
+        content_text += f'\\item {sub_q}\n'
+        content_solution += f'\\item {sub_q}\n'
+    content_text += '\\end{enumerate}\n'
+    content_solution += '\\end{enumerate}\n'
+
+    return content_text, content_solution
+
 def latex_render(questions, template_file, text_file, solution_file, track_n):
     text_content = ''
     solved_content = ''
@@ -87,6 +100,8 @@ def latex_render(questions, template_file, text_file, solution_file, track_n):
             text, solution = latex_render_open(q)
         elif q._type == 'fill':
             text, solution = latex_render_fill(q)
+        elif q._type =='exercise':
+            text, solution = latex_render_exercise(q)
 
         text_content += text
         solved_content += solution
