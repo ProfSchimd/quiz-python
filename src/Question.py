@@ -49,6 +49,14 @@ class ExerciseQuestion(DisplayQuestion):
         if type is not None:
             self._type = type
         self._sub_questions = sub_questions
+        
+class CompositeQuestion(DisplayQuestion):
+    def __init__(self, id, text, weight, questions, type=None):
+        super().__init__(id, text, weight)
+        self._questions = questions
+        self._type = type if type else self._type
+        
+# Raw classes below
 
 class RawQuestion(Question):
     """Represents (meta) questions before instantiation randomization and substitution."""
@@ -73,7 +81,9 @@ class RawQuestion(Question):
             return RawOpenQuestion.from_dict(d)
         elif d['type'] == 'exercise':
             return RawExerciseQuestion.from_dict(d)
-        return cls(d['id'], d['text'], d['weight'])
+        elif d['type'] == 'composite':
+            return RawCompositeQuestion.from_dict(d)
+        return cls(d['id'], d['text'], d.get('weight'))
         
 
 class RawChoiceQuestion(RawQuestion):
@@ -117,7 +127,7 @@ class RawChoiceQuestion(RawQuestion):
         elif d['type'] == 'multi-variate':
             text = d['text']
             correct = d['correct']
-        return cls(d['id'], text, d['weight'], d['options'], correct, d['type'])
+        return cls(d['id'], text, d.get('weight'), d['options'], correct, d['type'])
         
 
 class RawFillQuestion(RawQuestion):
@@ -132,7 +142,7 @@ class RawFillQuestion(RawQuestion):
 
     @classmethod
     def from_dict(cls, d):
-        return cls(d['id'], d['text'], d['weight'], d['tofill'], d['correct'], d['type'])
+        return cls(d['id'], d['text'], d.get('weight'), d['tofill'], d['correct'], d['type'])
 
 class RawOpenQuestion(RawQuestion):
     def __init__(self, id, text, weight, variants, type):
@@ -146,7 +156,7 @@ class RawOpenQuestion(RawQuestion):
 
     @classmethod
     def from_dict(cls, d):
-        return cls(d['id'], d['text'], d['weight'], d['variants'], d['type'])
+        return cls(d['id'], d['text'], d.get('weight'), d['variants'], d['type'])
 
 class RawExerciseQuestion(RawQuestion):
     """An exercise is a text followed by several questions."""
@@ -171,17 +181,25 @@ class RawExerciseQuestion(RawQuestion):
 
     @classmethod
     def from_dict(cls, d):
-        return cls(d['id'], d['text'], d['weight'], d['text-variants'], d['sub-questions'], d['type'])
+        return cls(d['id'], d['text'], d.get('weight'), d['text-variants'], d['sub-questions'], d['type'])
 
 class RawCompositeQuestion(RawQuestion):
     """A composite is essentially a list of questions."""
-    def __init__(self, id, text, weight, questions=[]):
+    def __init__(self, id, text, weight, questions, type):
         super().__init__(id, text, weight)
+        self._type = type
         self._questions = questions
+        
+    def to_display_question(self, seed=None):
+        questions = [q.to_display_question() for q in self._questions]
+        return CompositeQuestion(self.id, self._text, self._weight, questions, type=self._type)
 
     @classmethod
     def from_dict(cls, d):
-        return cls(d['id'], d['text'], d['weight'])
+        questions = [RawQuestion.from_dict(q) for q in d['questions']]
+        return cls(d['id'], d['text'], d.get('weight'), questions, d['type'])
+    
+# Next are util functions
 
 def fill_alternative(template, variants, seed=None):
     n_variants = len(variants)

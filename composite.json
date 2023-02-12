@@ -1,0 +1,51 @@
+[
+    {
+        "id": "001",
+        "type": "composite",
+        "text": "Completa in ordine gli esercizi sotto.",
+        "weight": 10,
+        "questions": [
+            {
+                "id": "001-01",
+                "type": "exercise",
+                "text": "Scrivi una funzione Javascript per disegnare un {{0}}",
+                "sub-questions": [
+                    {
+                        "question": "La funzione deve avere in input il {{0}}.",
+                        "variants": [
+                            ["colore","punto di centro della figura"]
+                        ],
+                        "weight": 2
+                    },
+                    {
+                        "question": "Un parametro opzionale deve permettere di selezionare {{0}} del bordo.",
+                        "variants": [
+                            ["il colore", "lo stile"]
+                        ],
+                        "weight": 1
+                    }
+                ],
+                "text-variants": [
+                    ["Rettangolo", "Triangolo", "Cerchio"]
+                ]
+            },
+            {
+                "id": "001-02",
+                "type": "exercise",
+                "text": "Utilizzando la funzione definita al punto precedente creare una funzione che ruota di {{0}} gradi in senso {{1}} la forma.",
+                "sub-questions": [
+                    {
+                        "question": "Creare una seconda funziona che utilizza quella già implementate per ruotare in senso {{0}} di n volte la figura.",
+                        "variants": [
+                            ["orario","anti orario"]
+                        ]
+                    }
+                ],
+                "text-variants": [
+                    ["30", "60", "90"],
+                    ["orario", "anti orario"]
+                ]
+            }
+        ]
+    }
+]

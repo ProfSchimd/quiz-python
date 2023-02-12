@@ -58,7 +58,7 @@ def latex_render_fill(q):
     sol_filled = '' + to_fill
     for j in range(len(correct)):
         # Attention: order of replacements is important
-        sol_filled = sol_filled.replace(f'{{{{{j}}}}}', correct[j])
+        sol_filled = sol_filled.replace(f'{{{{{j}}}}}', '{\\bf ' + correct[j] + '}')
         to_fill = to_fill.replace(f'{{{{{j}}}}}', fill_placeholder)
 
     content_text += to_fill
@@ -82,8 +82,36 @@ def latex_render_exercise(q):
         content_solution += f'\\item {sub_q}\n'
     content_text += '\\end{enumerate}\n'
     content_solution += '\\end{enumerate}\n'
-
+    
     return content_text, content_solution
+
+def latex_render_composite(q, heading='Esercizio'):
+    text = q._text + '\n'
+    solution = q._text + '\n'
+    i = 1
+    for sub_q in q._questions:
+        text += f'\\subsection*{{{heading} {i}}}\n'
+        solution += f'\\subsection*{{{heading} {i}}}\n'
+        sub_text, sub_solution = latex_render_by_type(sub_q)
+        text += sub_text
+        solution += sub_solution
+        i += 1
+    return text, solution
+
+def latex_render_by_type(q):
+    text = ''
+    solution = ''
+    if q._type in ['single', 'multiple', 'invertible', 'multi-variate']:
+        text, solution = latex_render_choices(q)
+    elif q._type == 'open':
+        text, solution = latex_render_open(q)
+    elif q._type == 'fill':
+        text, solution = latex_render_fill(q)
+    elif q._type =='exercise':
+        text, solution = latex_render_exercise(q)
+    elif q._type == 'composite':
+        text, solution = latex_render_composite(q)
+    return text, solution
 
 def latex_render(questions, template_file, text_file, solution_file, track_n):
     text_content = ''
@@ -92,20 +120,12 @@ def latex_render(questions, template_file, text_file, solution_file, track_n):
     for q in questions:
         text_content += question_header(i)
         solved_content += question_header(i)
-        text = ''
-        solution = ''
-        if q._type in ['single', 'multiple', 'invertible', 'multi-variate']:
-            text, solution = latex_render_choices(q)
-        elif q._type == 'open':
-            text, solution = latex_render_open(q)
-        elif q._type == 'fill':
-            text, solution = latex_render_fill(q)
-        elif q._type =='exercise':
-            text, solution = latex_render_exercise(q)
-
+        text, solution = latex_render_by_type(q)
         text_content += text
         solved_content += solution
         i += 1
+
+    
 
     # Text output
     out = open(template_file).read()
