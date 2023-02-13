@@ -6,6 +6,7 @@ import os.path
 
 from rendering.latex_render import latex_render
 from rendering.text_rendering import text_render
+from rendering.html_rendering import html_render
 import Question as qst
 
 
@@ -61,6 +62,8 @@ def render_quiz(quiz, template, text, solution, track_n, render):
         latex_render(quiz, template, text, solution, track_n)
     elif render == 'text':
         text_render(quiz, template, text, solution, track_n)
+    elif render == 'html':
+        html_render(quiz, 'template.html', text, solution, track_n)
 
 if __name__ == "__main__":
     args = parse_arguments()
