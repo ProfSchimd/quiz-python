@@ -2,6 +2,8 @@ text*.tex
 solution*.tex
 text*.txt
 solution*.txt
+text*.html
+solution*.html
 build/
 .vscode/
 
