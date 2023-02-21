@@ -70,18 +70,16 @@ def html_render(questions, template_file, text_file, solution_file, track_n):
         solved_content += solution
         i += 1
 
-    
-
     # Text output
     out = open(template_file).read()
     out = out.replace('{% CONTENT %}', text_content)
     # out = out.replace('%%--FOOTRIGHT--%%', f'T:{track_n}')
-    open(text_file + '.html', 'w').write(out)
+    open(text_file, 'w').write(out)
 
     # Solution output
     out = open(template_file).read()
     out = out.replace('{% CONTENT %}', solved_content)
     # out = out.replace('%%--FOOTRIGHT--%%', f'T:{track_n}')
-    open(solution_file + '.html', 'w').write(out)
+    open(solution_file, 'w').write(out)
 
 

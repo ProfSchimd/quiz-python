@@ -21,14 +21,16 @@ def parse_arguments():
                         help='Name of the output (text) file, without extension')
     parser.add_argument('--solution', dest='solution', default='solution',
                         help='Name of the output (solution) file, without extension')
+    parser.add_argument('--destination', dest='destination', default='.',
+                        help='Directory where the output files will be put')
     parser.add_argument('--tracks', dest='tracks', type=int,
                         default=1, help='Number of tracks (default 1)')
     parser.add_argument('--seed', dest='seed', default=None,
                         help='Integer value for seeding randomization (default is no seeding)')
-    parser.add_argument('--test', dest='test', type=int,
-                        default=0, help='Used for developing purpose')
     parser.add_argument('--render', dest='render', default='latex', 
                         help='Defines the rendering type: latex, text (default is latex)')
+    parser.add_argument('--test', dest='test', type=int,
+                        default=0, help='Used for developing purpose')
     return parser.parse_args()
 
 
@@ -57,13 +59,22 @@ def create_quiz(questions, count, shuffle=True):
         random.shuffle(quiz)
     return quiz[:count]
 
-def render_quiz(quiz, template, text, solution, track_n, render):
+def render_quiz(quiz, template, text, solution, track_n, render, destination):
+    extensions = {
+        'latex': 'tex',
+        'text': 'txt',
+        'html': 'html'
+    }
+    ext = extensions.get(render, '')
+    text_path = os.path.join(destination, f'{text}.{ext}')
+    solution_path = os.path.join(destination, f'{solution}.{ext}')
+    
     if render == 'latex':
-        latex_render(quiz, template, text, solution, track_n)
+        latex_render(quiz, template, text_path, solution_path, track_n)
     elif render == 'text':
-        text_render(quiz, template, text, solution, track_n)
+        text_render(quiz, template, text_path, solution_path, track_n)
     elif render == 'html':
-        html_render(quiz, 'template.html', text, solution, track_n)
+        html_render(quiz, 'template.html', text_path, solution_path, track_n)
 
 if __name__ == "__main__":
     args = parse_arguments()
@@ -87,5 +98,8 @@ if __name__ == "__main__":
         if args.tracks > 1:
             out_file += f'_{track+1}'
             sol_file += f'_{track+1}'
-        render_quiz(quiz, template_file, out_file, sol_file, track, args.render)
+        render_quiz(quiz, template_file, out_file,
+            sol_file, track, args.render,
+            os.path.expanduser(args.destination)
+        )
         

@@ -2,8 +2,10 @@ import util
 
 fill_placeholder = ".................."
 
+
 def question_header(i):
     return f'\n\\subsection*{{Domanda {i}}}\n'
+
 
 def html_to_latex(s):
 	s = s.replace('</code>', '}')
@@ -16,6 +18,7 @@ def html_to_latex(s):
 	s = s.replace('</i>', '}')
 	s = s.replace('<i>', '\\emph{')
 	return s
+
 
 def latex_render_choices(q):
     content_text = ''
@@ -40,6 +43,7 @@ def latex_render_choices(q):
     content_text += '\\end{itemize}\n'
     content_solution += '\\end{itemize}\n'
     return content_text, content_solution
+
 
 def latex_render_fill(q):
     content_text = ''
@@ -66,10 +70,12 @@ def latex_render_fill(q):
 
     return content_text, content_solution
 
+
 def latex_render_open(q):
     content_text = q._text
     content_solution = q._text
     return content_text, content_solution
+
 
 def latex_render_exercise(q):
     content_text = f'{html_to_latex(q._text)}\n'
@@ -84,6 +90,7 @@ def latex_render_exercise(q):
     content_solution += '\\end{enumerate}\n'
     
     return content_text, content_solution
+
 
 def latex_render_composite(q, heading='Esercizio'):
     text = q._text + '\n'
@@ -113,6 +120,7 @@ def latex_render_by_type(q):
         text, solution = latex_render_composite(q)
     return text, solution
 
+
 def latex_render(questions, template_file, text_file, solution_file, track_n):
     text_content = ''
     solved_content = ''
@@ -125,17 +133,15 @@ def latex_render(questions, template_file, text_file, solution_file, track_n):
         solved_content += solution
         i += 1
 
-    
-
     # Text output
     out = open(template_file).read()
     out = out.replace('%%--CONTENT--%%', text_content)
     out = out.replace('%%--FOOTRIGHT--%%', f'T:{track_n}')
-    open(text_file + '.tex', 'w').write(out)
+    open(text_file, 'w').write(out)
 
     # Solution output
     out = open(template_file).read()
     out = out.replace('%%--CONTENT--%%', solved_content)
     out = out.replace('%%--FOOTRIGHT--%%', f'T:{track_n}')
-    open(solution_file + '.tex', 'w').write(out)
+    open(solution_file, 'w').write(out)
 

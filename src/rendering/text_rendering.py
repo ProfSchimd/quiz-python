@@ -49,6 +49,8 @@ def text_render_composite(q, heading='Esercizio'):
         text += sub_text
         solution + sub_solution
         i += 1
+    text += '\n\n'
+    solution += '\n\n'
     return text, solution
 
 def text_render_by_type(q):
@@ -85,11 +87,11 @@ def text_render(questions, template_file, text_file, solution_file, track_n):
     # out = out.replace('%%--CONTENT--%%', text_content)
     # out = out.replace('%%--FOOTRIGHT--%%', f'T:{track_n}')
     out = text_content
-    open(text_file + '.txt', 'w').write(out)
+    open(text_file, 'w').write(out)
 
     # Solution output
     # out = open(template_file).read()
     # out = out.replace('%%--CONTENT--%%', solved_content)
     # out = out.replace('%%--FOOTRIGHT--%%', f'T:{track_n}')
     out = solved_content
-    open(solution_file + '.txt', 'w').write(out)
+    open(solution_file, 'w').write(out)
