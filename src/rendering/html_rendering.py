@@ -24,7 +24,7 @@ def html_render_exercise(q):
         content_text += f'<li>{sub_q}</li>\n'
         content_solution += f'<li>{sub_q}</li>\n'
     content_text += '</ol>\n'
-    content_solution += '<ol>\n'
+    content_solution += '</ol>\n'
     
     return content_text, content_solution
 

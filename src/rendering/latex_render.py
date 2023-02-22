@@ -8,16 +8,18 @@ def question_header(i):
 
 
 def html_to_latex(s):
-	s = s.replace('</code>', '}')
-	s = s.replace('<code>', '\\texttt{')
-	s = s.replace('<br>', '\\\\')
-	s = s.replace('</strong>', '}')
-	s = s.replace('<strong>', '\\textbf{')
-	s = s.replace('</u>', '}')
-	s = s.replace('<u>', '\\underline{')
-	s = s.replace('</i>', '}')
-	s = s.replace('<i>', '\\emph{')
-	return s
+    s = s.replace('</code>', '}')
+    s = s.replace('<code>', '\\texttt{')
+    s = s.replace('<br>', '\\\\')
+    s = s.replace('</strong>', '}')
+    s = s.replace('<strong>', '\\textbf{')
+    s = s.replace('</b>', '}')
+    s = s.replace('<b>', '\\textbf{')
+    s = s.replace('</u>', '}')
+    s = s.replace('<u>', '\\underline{')
+    s = s.replace('</i>', '}')
+    s = s.replace('<i>', '\\emph{')
+    return s
 
 
 def latex_render_choices(q):
@@ -84,6 +86,7 @@ def latex_render_exercise(q):
     content_text += '\\begin{enumerate}\n'
     content_solution += '\\begin{enumerate}\n'
     for sub_q in q._sub_questions:
+        sub_q = html_to_latex(sub_q)
         content_text += f'\\item {sub_q}\n'
         content_solution += f'\\item {sub_q}\n'
     content_text += '\\end{enumerate}\n'
@@ -97,8 +100,8 @@ def latex_render_composite(q, heading='Esercizio'):
     solution = q._text + '\n'
     i = 1
     for sub_q in q._questions:
-        text += f'\\subsection*{{{heading} {i}}}\n'
-        solution += f'\\subsection*{{{heading} {i}}}\n'
+        text += f'\\subsection*{{{heading} {i} ({sub_q._weight} Punti)}}\n'
+        solution += f'\\subsection*{{{heading} {i} ({sub_q._weight} Punti)}}\n'
         sub_text, sub_solution = latex_render_by_type(sub_q)
         text += sub_text
         solution += sub_solution
