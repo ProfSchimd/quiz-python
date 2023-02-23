@@ -1,5 +1,21 @@
 import textwrap
 
+fill_placeholder = ".................."
+
+def html_to_text(s):
+    s = s.replace('</code>', '')
+    s = s.replace('<code>', '')
+    s = s.replace('<br>', '\n')
+    s = s.replace('</strong>', '')
+    s = s.replace('<strong>', '')
+    s = s.replace('</b>', '')
+    s = s.replace('<b>', '')
+    s = s.replace('</u>', '')
+    s = s.replace('<u>', '')
+    s = s.replace('</i>', '')
+    s = s.replace('<i>', '')
+    return s
+
 def question_header(i):
     header = f'DOMANDA {i}\n'
     # -1 accounts for the '\n' character
@@ -8,9 +24,37 @@ def question_header(i):
 
 
 def text_render_choices(q):
-    text = ''
-    solution = ''
-    return text, solution
+    content_text = ''
+    content_solution = ''
+    text = q._text
+    options = q._options
+    correct = q._correct
+	
+    content_text += f'{html_to_text(text)}\n'
+    content_solution += f'{html_to_text(text)}\n'
+    
+    for j in range(len(options)):
+        opt = options[j]
+        content_text += '\n'.join(textwrap.wrap(
+            html_to_text(opt),
+            width=80,
+            initial_indent=' [ ] ',
+            subsequent_indent='     ')
+        ) + '\n'
+        mark = ' [ ] '
+        if correct[j] == 1:
+            mark = ' [X] '
+        content_solution += '\n'.join(textwrap.wrap(
+            html_to_text(opt),
+            width=80,
+            initial_indent=mark,
+            subsequent_indent='     ')
+        ) + '\n'
+        j += 1
+    content_text += '\n'
+    content_solution += '\n'
+    
+    return content_text, content_solution
 
 
 def text_render_open(q):
@@ -21,9 +65,21 @@ def text_render_open(q):
 
 
 def text_render_fill(q):
-    text = ''
-    solution = ''
-    return text, solution
+    content_text = ''
+    content_solution = ''
+    correct = q._correct
+    content_text += f'{html_to_text(q._text)}\n\n'
+    content_solution += f'{html_to_text(q._text)}\n\n'
+    to_fill = html_to_text(q._to_fill)
+    sol_filled = '' + to_fill
+    for j in range(len(correct)):
+        sol_filled = sol_filled.replace(f'{{{{{j}}}}}', correct[j].upper())
+        to_fill = to_fill.replace(f'{{{{{j}}}}}', fill_placeholder)
+
+    content_text += to_fill + '\n\n'
+    content_solution += sol_filled + '\n\n'
+
+    return content_text, content_solution
 
 def text_render_exercise(q):
     text = '\n'.join(textwrap.wrap(q._text, width=80)) + '\n'
