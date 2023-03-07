@@ -96,8 +96,8 @@ def latex_render_exercise(q):
 
 
 def latex_render_composite(q, heading='Esercizio'):
-    text = q._text + '\n'
-    solution = q._text + '\n'
+    text = html_to_latex(q._text) + '\n'
+    solution = html_to_latex(q._text) + '\n'
     i = 1
     for sub_q in q._questions:
         text += f'\\subsection*{{{heading} {i} ({sub_q._weight} Punti)}}\n'

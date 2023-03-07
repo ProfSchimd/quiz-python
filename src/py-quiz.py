@@ -29,12 +29,12 @@ def parse_arguments():
                         help='Integer value for seeding randomization (default is no seeding)')
     parser.add_argument('--render', dest='render', default='latex', 
                         help='Defines the rendering type: latex, text (default is latex)')
+    parser.add_argument('--template', dest='template', 
+                        help="Indicates the template file")
     parser.add_argument('--test', dest='test', type=int,
                         default=0, help='Used for developing purpose')
     return parser.parse_args()
 
-
-template_file = 'template.tex'
 
 def load_questions(args):
     """Loads questions from file, but doesn't randomize it. 
@@ -48,16 +48,17 @@ def load_questions(args):
             questions += json.load(fp)
     return questions
 
+
 def parse_question_json(json_questions):
     return [qst.RawQuestion.from_dict(q) for q in json_questions]
     
+
 def create_quiz(questions, count, shuffle=True):
-    # TODO: for efficiency it will be better to only parse
-    # 'count' number of RawQuestion into DisplayQuestion
     quiz = [q.to_display_question() for q in questions]
     if shuffle:
         random.shuffle(quiz)
     return quiz[:count]
+
 
 def render_quiz(quiz, template, text, solution, track_n, render, destination):
     extensions = {
@@ -68,15 +69,16 @@ def render_quiz(quiz, template, text, solution, track_n, render, destination):
     ext = extensions.get(render, '')
     text_path = os.path.join(destination, f'{text}.{ext}')
     solution_path = os.path.join(destination, f'{solution}.{ext}')
+    template = template if template is not None else f'template.{ext}'
     
     if render == 'latex':
         latex_render(quiz, template, text_path, solution_path, track_n)
     elif render == 'text':
         text_render(quiz, template, text_path, solution_path, track_n)
     elif render == 'html':
-        html_render(quiz, 'template.html', text_path, solution_path, track_n)
-
-if __name__ == "__main__":
+        html_render(quiz, template, text_path, solution_path, track_n)
+        
+def main():
     args = parse_arguments()
 
     # Load JSON file and convert to raw questions
@@ -98,8 +100,11 @@ if __name__ == "__main__":
         if args.tracks > 1:
             out_file += f'_{track+1}'
             sol_file += f'_{track+1}'
-        render_quiz(quiz, template_file, out_file,
+        render_quiz(quiz, args.template, out_file,
             sol_file, track, args.render,
             os.path.expanduser(args.destination)
         )
-        
+
+
+if __name__ == "__main__":
+    main()        
