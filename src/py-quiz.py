@@ -33,6 +33,8 @@ def parse_arguments():
                         help="Indicates the template file")
     parser.add_argument('--test', dest='test', type=int,
                         default=0, help='Used for developing purpose')
+    parser.add_argument('-v', '--verbosity', dest='verbosity', type=int,
+                        default=0, help='Indicate the verbosity level (0, 1, 2) of output (default is 0)')
     return parser.parse_args()
 
 
@@ -78,8 +80,34 @@ def render_quiz(quiz, template, text, solution, track_n, render, destination):
     elif render == 'html':
         html_render(quiz, template, text_path, solution_path, track_n)
         
+def print_output(info, verbosity):
+    if verbosity == 0:
+        return
+    print(f'Seed:   {info["seed"]}')
+    print(f'Tracks: {info["tracks"]}')
+    print(f'Number: {info["number"]}')
+    table = {
+        "header": [],
+        "weights": [],
+        "questions": []
+    }
+    for i, quiz in enumerate(info["tests"]):
+        table["header"].append(f"Q{i}")
+        table["weights"].append(f"W={sum([q._weight for q in quiz])}")
+        table["questions"].append([f"{q.id} ({q._type[0].upper()}:{q._weight})" for q in quiz])
+    print("".join([f"{t:^12}" for t in table["header"]]))
+    print("".join([f"{t:^12}" for t in table["weights"]]))
+    if verbosity > 1:
+        for r in zip(*table["questions"]):
+            print("".join([f"{t:^12}" for t in r]))
+    
+    
+        
+        
 def main():
     args = parse_arguments()
+    # This contains output information 
+    info = {}
 
     # Load JSON file and convert to raw questions
     json_questions = load_questions(args)
@@ -89,11 +117,19 @@ def main():
     if max_number < 0 or max_number > len(questions):
         max_number = len(questions)
 
+    # We always use a seed to allow reproducibility
+    if args.seed is None:
+        args.seed = random.randint(0,2**30)
     random.seed(args.seed)
+    info["seed"] = args.seed
+    info["tracks"] = args.tracks
+    info["number"] = max_number
+    info["tests"] = []
     
     for track in range(args.tracks):
         # Create quiz
         quiz = create_quiz(questions, max_number)
+        info["tests"].append(quiz)
         # File naming and rendering
         out_file = args.output
         sol_file = args.solution
@@ -104,6 +140,8 @@ def main():
             sol_file, track, args.render,
             os.path.expanduser(args.destination)
         )
+        
+    print_output(info, args.verbosity)
 
 
 if __name__ == "__main__":
