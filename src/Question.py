@@ -65,7 +65,7 @@ class RawQuestion(Question):
         """Initialize RawQuestion."""
         super().__init__(id, text, weight)
 
-    def to_display_question(self, seed=None):
+    def to_display_question(self):
         return DisplayQuestion(self.id, self._text, self._weight)
 
     def __str__(self):
@@ -93,9 +93,8 @@ class RawChoiceQuestion(RawQuestion):
         self._correct = correct
         self._type = type
 
-    def to_display_question(self, seed=None):
-        if seed is None:
-            random.seed(seed)
+    def to_display_question(self):
+ 
         text = None
         # Choose between versions (single -> 1, multiple -> 1, invertible -> 2, ...)
         variant = random.randint(0,len(self._text)-1)
@@ -137,7 +136,7 @@ class RawFillQuestion(RawQuestion):
         self._correct = correct
         self._type = type
 
-    def to_display_question(self, seed=None):
+    def to_display_question(self):
         return FillQuestion(self.id, self._text, self._to_fill, self._weight, self._correct, self._type)
 
     @classmethod
@@ -150,7 +149,7 @@ class RawOpenQuestion(RawQuestion):
         self._variants = variants
         self._type = type
 
-    def to_display_question(self, seed=None):
+    def to_display_question(self):
         text = fill_alternative(self._text, self._variants)
         return OpenQuestion(self.id, text, self._weight, self._type)
 
@@ -167,7 +166,7 @@ class RawExerciseQuestion(RawQuestion):
         self._sub_questions = sub_questions
         
 
-    def to_display_question(self, seed=None):
+    def to_display_question(self):
         text = fill_alternative(self._text, self._text_variants)
         n_sub = len(self._sub_questions)
         sub_questions = []
@@ -190,7 +189,7 @@ class RawCompositeQuestion(RawQuestion):
         self._type = type
         self._questions = questions
         
-    def to_display_question(self, seed=None):
+    def to_display_question(self):
         questions = [q.to_display_question() for q in self._questions]
         return CompositeQuestion(self.id, self._text, self._weight, questions, type=self._type)
 
@@ -201,7 +200,7 @@ class RawCompositeQuestion(RawQuestion):
     
 # Next are util functions
 
-def fill_alternative(template, variants, seed=None):
+def fill_alternative(template, variants):
     n_variants = len(variants)
     for i in range (n_variants):
         n_opts = len(variants[i])
