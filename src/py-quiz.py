@@ -4,13 +4,14 @@ import random
 import argparse
 import os.path
 
+import Question as qst
 from rendering.latex_render import latex_render
 from rendering.text_rendering import text_render
 from rendering.html_rendering import html_render
-import Question as qst
+from util import get_similarity_matrix
 
 
-def parse_arguments():
+def parse_arguments() -> argparse.Namespace:
     """Parse command line arguments."""
     parser = argparse.ArgumentParser(description='Generate random quiz from input JSON files.')
     parser.add_argument('--number', dest='n', type=int, default=-1,
@@ -80,9 +81,10 @@ def render_quiz(quiz, template, text, solution, track_n, render, destination):
     elif render == 'html':
         html_render(quiz, template, text_path, solution_path, track_n)
         
-def print_output(info, verbosity):
+def print_output(info: dict, verbosity: int):
     if verbosity == 0:
         return
+    print(f'Input:  {len(info["files"])} file(s) {len(info["questions"])} question(s)')
     print(f'Seed:   {info["seed"]}')
     print(f'Tracks: {info["tracks"]}')
     print(f'Number: {info["number"]}')
@@ -98,11 +100,21 @@ def print_output(info, verbosity):
     print("".join([f"{t:^12}" for t in table["header"]]))
     print("".join([f"{t:^12}" for t in table["weights"]]))
     if verbosity > 1:
+        # Print summary of questions with IDs
         for r in zip(*table["questions"]):
             print("".join([f"{t:^12}" for t in r]))
+        # Print a similarity matrix
+        matrix = get_similarity_matrix(info["tests"])
+        n = len(info["tests"])
+        print()
+        print("    ", "".join([f" T{i:<4} " for i in range(n)]))
+        for i in range(n):
+            row = f"T{i:<3}"
+            for j in range(n):
+                row += f" {matrix[i][j]:^5.2} "
+                
+            print(row)
     
-    
-        
         
 def main():
     args = parse_arguments()
@@ -121,6 +133,8 @@ def main():
     if args.seed is None:
         args.seed = random.randint(0,2**30)
     random.seed(args.seed)
+    info["files"] = args.input.split(",")
+    info["questions"] = questions
     info["seed"] = args.seed
     info["tracks"] = args.tracks
     info["number"] = max_number
