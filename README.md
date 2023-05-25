@@ -4,10 +4,13 @@ A Python program to generate randomized tests from input `json` questions.
 Current output format is LaTeX, which can be compiled into pdf. The program
 outputs both the text and the solution files.
 
-* [Json format](#json-format)
-* [Planned features](#planned-features)
-* [Prerequisites](#prerequisites)
-* [Examples](#examples)
+- [Quiz Python](#quiz-python)
+  - [Json format](#json-format)
+  - [Planned features](#planned-features)
+    - [Completed features](#completed-features)
+  - [Prerequisites](#prerequisites)
+  - [Synopsis](#synopsis)
+  - [Examples](#examples)
 
 ## Json format
 
@@ -24,7 +27,6 @@ options to be checked (in `invertible` type questions this relation is reversed 
 * a `weight` number representing the weight of the answer in the final score computation (used only for automatic evaluation).
 
 ## Planned features
-* ~~Optional seeding for replication of tests~~
 * Add a `--no-random` option that disable randomization
 * Add a `--save file.json` option to save in `JSON` format the questions used (multiple file if
 `--tracks` is greater than one)
@@ -35,10 +37,11 @@ options to be checked (in `invertible` type questions this relation is reversed 
 * Integrate external service like [YToTech](https://latex.ytotech.com/), see documentation
 [here](https://github.com/YtoTech/latex-on-http)
 * Support different backends: TeX, pdf, txt, docx, ...
-* Refactoring with Question class (see `dev.md`)
-* Add an option `--template` for custom templates
 
 ### Completed features
+* ~~Optional seeding for replication of tests~~
+* * ~~Refactoring with Question class (see `dev.md`)~~
+* ~~Add an option `--template` for custom templates~~
 * ~~Create several version with `--tracks` options (default being 1)~~
 * ~~All English help text~~
 * ~~Add options `--output` for output names~~
@@ -48,20 +51,36 @@ options to be checked (in `invertible` type questions this relation is reversed 
 
 Currently, the code uses only features from standard Python packages: `random`, `json`, `argparse`.
 
+The backend uses [FastAPI](https://fastapi.tiangolo.com/), it is best run in development environment with [uvicorn](https://www.uvicorn.org/), see also [requirements.txt](./requirements.txt).
+
 ## Synopsis
 
 ```
-usage: py-quiz.py [-h] [--number N] [--input INPUT] [--output OUTPUT] [--solution SOLUTION] [--tracks TRACKS]
+usage: py-quiz.py [-h] [--number N] [--input INPUT] [--output OUTPUT]
+                  [--solution SOLUTION] [--destination DESTINATION]
+                  [--tracks TRACKS] [--seed SEED] [--render RENDER]
+                  [--template TEMPLATE] [--test TEST] [-v VERBOSITY]
 
 Generate random quiz from input JSON files.
 
 options:
-  -h, --help           show this help message and exit
-  --number N           Number of questions, if -1 (default) use all
-  --input INPUT        Comma separated list of JSON file(s) with questions
-  --output OUTPUT      Name of the output (text) file, without extension
-  --solution SOLUTION  Name of the output (solution) file, without extension
-  --tracks TRACKS      Number of tracks (default 1)
+  -h, --help            show this help message and exit
+  --number N            Number of questions, if -1 (default) use all
+  --input INPUT         Comma separated list of JSON file(s) with questions
+  --output OUTPUT       Name of the output (text) file, without extension
+  --solution SOLUTION   Name of the output (solution) file, without extension
+  --destination DESTINATION
+                        Directory where the output files will be put
+  --tracks TRACKS       Number of tracks (default 1)
+  --seed SEED           Integer value for seeding randomization (default is no
+                        seeding)
+  --render RENDER       Defines the rendering type: latex, text (default is
+                        latex)
+  --template TEMPLATE   Indicates the template file
+  --test TEST           Used for developing purpose
+  -v VERBOSITY, --verbosity VERBOSITY
+                        Indicate the verbosity level (0, 1, 2) of output
+                        (default is 0)
 ```
 
 ## Examples
@@ -96,4 +115,15 @@ $ python py-quiz --input in.json --output out.tex --solution sol.tex
 Specifies the maximum number (`10`) of questions taken from `questions.json` in the output `out.tex`
 ```
 python py-quiz.py --number 10
+
+## Backend (experimental)
+The *backend* will be the preferred way to access `quiz-python` APIs, currently it is under development and can only be tested with sample API. 
+
+To run the backend app on the port 8888 (leaving out `--port` uses default port which is 8000)
+
+```console
+uvicorn runserver:app --reload --port 8888
+```
+
+**It is important to move to the `src/` directory before running the command.**
 
