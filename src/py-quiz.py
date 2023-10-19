@@ -39,12 +39,12 @@ def parse_arguments() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def load_questions(args):
+def load_questions(input: str) -> list:
     """Loads questions from file, but doesn't randomize it. 
     
     This function contains the logic to open file(s), merge them
     (if multiple are indicated)."""
-    question_files = args.input.split(',')
+    question_files = input.split(',')
     questions = []
     for q in question_files:
         with open(os.path.expanduser(q)) as fp:
@@ -52,11 +52,11 @@ def load_questions(args):
     return questions
 
 
-def parse_question_json(json_questions):
+def parse_question_json(json_questions: list) -> list:
     return [qst.RawQuestion.from_dict(q) for q in json_questions]
     
 
-def create_quiz(questions, count, shuffle=True):
+def create_quiz(questions: list, count: int, shuffle: bool=True) -> list:
     quiz = [q.to_display_question() for q in questions]
     if shuffle:
         random.shuffle(quiz)
@@ -122,7 +122,7 @@ def main():
     info = {}
 
     # Load JSON file and convert to raw questions
-    json_questions = load_questions(args)
+    json_questions = load_questions(args.input)
     questions = parse_question_json(json_questions)
     # Adjust the number of question in the quiz
     max_number = args.n

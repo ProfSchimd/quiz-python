@@ -19,6 +19,10 @@ def html_to_latex(s):
     s = s.replace('<u>', '\\underline{')
     s = s.replace('</i>', '}')
     s = s.replace('<i>', '\\emph{')
+    s = s.replace('</ul>', '\\end{itemize}')
+    s = s.replace('<ul>', '\\begin{itemize}')
+    s = s.replace('</li>', '')
+    s = s.replace('<li>', '\\item ')
     return s
 
 

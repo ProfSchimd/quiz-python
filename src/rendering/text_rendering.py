@@ -14,6 +14,10 @@ def html_to_text(s):
     s = s.replace('<u>', '')
     s = s.replace('</i>', '')
     s = s.replace('<i>', '')
+    s = s.replace('</ul>', 'å')
+    s = s.replace('<ul>', '')
+    s = s.replace('</li>', '')
+    s = s.replace('<li>', '- ')
     return s
 
 def question_header(i):
