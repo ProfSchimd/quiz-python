@@ -51,8 +51,6 @@ options to be checked (in `invertible` type questions this relation is reversed 
 
 Currently, the code uses only features from standard Python packages: `random`, `json`, `argparse`.
 
-The backend uses [FastAPI](https://fastapi.tiangolo.com/), it is best run in development environment with [uvicorn](https://www.uvicorn.org/), see also [requirements.txt](./requirements.txt).
-
 ## Synopsis
 
 ```
