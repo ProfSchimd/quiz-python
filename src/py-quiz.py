@@ -5,9 +5,10 @@ import argparse
 import os.path
 
 import Question as qst
-from rendering.latex_render import latex_render
+from rendering.latex_rendering import latex_render
 from rendering.text_rendering import text_render
 from rendering.html_rendering import html_render
+from rendering.json_rendering import json_render
 from util import get_similarity_matrix
 
 
@@ -63,23 +64,25 @@ def create_quiz(questions: list, count: int, shuffle: bool=True) -> list:
     return quiz[:count]
 
 
-def render_quiz(quiz, template, text, solution, track_n, render, destination):
+def render_quiz(quiz: list, template:str, text: str, solution: str, track_n: int, render: str, destination: str):
     extensions = {
         'latex': 'tex',
         'text': 'txt',
         'html': 'html'
     }
     ext = extensions.get(render, '')
-    text_path = os.path.join(destination, f'{text}.{ext}')
-    solution_path = os.path.join(destination, f'{solution}.{ext}')
-    template = template if template is not None else f'template.{ext}'
+    text_path: str = os.path.join(destination, f'{text}.{ext}')
+    solution_path: str = os.path.join(destination, f'{solution}.{ext}')
+    template: str = template if template is not None else f'template.{ext}'
     
-    if render == 'latex':
+    if render.lower() == 'latex':
         latex_render(quiz, template, text_path, solution_path, track_n)
-    elif render == 'text':
+    elif render.lower() == 'text':
         text_render(quiz, template, text_path, solution_path, track_n)
-    elif render == 'html':
+    elif render.lower() == 'html':
         html_render(quiz, template, text_path, solution_path, track_n)
+    elif render.lower() == 'json':
+        json_render(quiz, template, text_path, solution_path, track_n)
         
 def print_output(info: dict, verbosity: int):
     if verbosity == 0:
@@ -94,7 +97,7 @@ def print_output(info: dict, verbosity: int):
         "questions": []
     }
     for i, quiz in enumerate(info["tests"]):
-        table["header"].append(f"Q{i}")
+        table["header"].append(f"T{i}")
         table["weights"].append(f"W={sum([q._weight for q in quiz])}")
         table["questions"].append([f"{q.id} ({q._type[0].upper()}:{q._weight})" for q in quiz])
     print("".join([f"{t:^12}" for t in table["header"]]))
@@ -131,7 +134,8 @@ def main():
 
     # We always use a seed to allow reproducibility
     if args.seed is None:
-        args.seed = random.randint(0,2**30)
+        # Convert int to string to be consistent with the seed parameter
+        args.seed = str(random.randint(0,2**30))
     random.seed(args.seed)
     info["files"] = args.input.split(",")
     info["questions"] = questions
@@ -148,8 +152,8 @@ def main():
         out_file = args.output
         sol_file = args.solution
         if args.tracks > 1:
-            out_file += f'_{track+1}'
-            sol_file += f'_{track+1}'
+            out_file += f'_{track}'
+            sol_file += f'_{track}'
         render_quiz(quiz, args.template, out_file,
             sol_file, track, args.render,
             os.path.expanduser(args.destination)
